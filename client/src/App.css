@@ -1,0 +1,31 @@
+.App {
+  height: 100vh;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(auto, 300px) minmax(400px, auto);
+
+  height: 100%;
+}
+
+.explorer {
+  border: 1px solid black;
+  height: 100%;
+  /* background-color: aqua; */
+
+  display: flex;
+  flex-direction: column;
+}
+
+.editor {
+  border: 1px solid black;
+  height: 100%;
+  /* background-color: blueviolet; */
+}
+
+.tab {
+  padding: 10px;
+  margin: 0;
+  border: 1px solid black;
+}
