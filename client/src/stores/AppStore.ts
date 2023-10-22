@@ -1,4 +1,5 @@
 import {observable, action, makeObservable, autorun, computed} from 'mobx'
+import { ParamTable } from './ParamTable'
 
 export type HTTPMethod = 'GET' | 'POST'
 
@@ -6,58 +7,6 @@ interface TabParams {
     name?: string,
     url?: string,
     method?: HTTPMethod
-}
-
-export type Param = {
-    key: string,
-    value: string
-}
-
-export class ParamTable {
-    params: Param[] = []
-
-    constructor() {
-        makeObservable(this, {
-            params: observable,
-            setKey: action,
-            setValue: action,
-            lastValueIsEditable: computed,
-            lastId: computed,
-        });
-    }
-
-    setKey(id: number, key: string) {
-        if (id === this.params.length) {
-            this.params.push({
-                key: '',
-                value: ''
-            })
-        }
-        this.params[id].key = key;
-    }
-
-    setValue(id: number, value: string) {
-        this.params[id].value = value;
-    }
-
-    get lastValueIsEditable() {
-        if (this.params.length === 0) {
-            return false;
-        }
-        const lastId = this.params.length - 1;
-        const lastParam = this.params[lastId]
-        return lastParam.key !== '' && lastParam.value === '';
-    }
-
-    get lastId() {
-        if (this.params.length === 0) {
-            return 0;
-        }
-        if (this.lastValueIsEditable) {
-            return this.params.length - 1;
-        }
-        return this.params.length;
-    }
 }
 
 export class Tab {
@@ -130,4 +79,38 @@ class AppStore {
     }
 }
 
+class ResizeStore {
+    editorX = 300;
+
+    mouseDown = false;
+
+    constructor() {
+        makeObservable(this, {
+            editorX: observable,
+            mouseDown: observable,
+            setEditorX: action,
+            explorerStyle: computed
+        })
+    }
+
+    setEditorX(x: number) {
+        if (x > 200) {
+            this.editorX = x;
+        }
+    }
+
+    setMouseDown() {
+        this.mouseDown = true;
+    }
+
+    setMouseUp() {
+        this.mouseDown = false;
+    }
+
+    get explorerStyle() {
+        return {width: `${this.editorX}px`}
+    }
+}
+
 export const store = new AppStore();
+export const resize_store = new ResizeStore();

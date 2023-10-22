@@ -25,7 +25,7 @@ const Editor = observer(() => {
                 }}/>
             </Labeled>
 
-            <EditableTable params={store.currentTab.requestParams.params}/>
+            <EditableTable paramTable={store.currentTab.requestParams}/>
         </div>
     )
 });

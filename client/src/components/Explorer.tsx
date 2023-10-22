@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import '../App.scss';
 import { observer } from 'mobx-react-lite';
-import { Tab, store } from '../stores/AppStore';
+import { Tab, store, resize_store } from '../stores/AppStore';
 import { TextInput } from './forms/TextInput';
 
 const TabElement = observer((props: {name: string, tab_key: number}) => {
@@ -35,8 +35,16 @@ const Exlorer = observer(() => {
         setName('');
     }
 
+    // const [width, setWidth] = useState('300px');
+
+    // const mouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    //     setWidth(e.screenX + 'px')
+    // }
+
+    // const width = '100px'
+
     return (
-        <div className="explorer">
+        <div className="explorer" style={resize_store.explorerStyle}>
             <ExplorerTabList tabs={store.tabs}/>
 
             <div className="explorer__tab-adder">
@@ -48,6 +56,8 @@ const Exlorer = observer(() => {
                     </svg>
                 </button>
             </div>
+
+            {/* <div id="resize" onMouseMove={mouseMove}></div> */}
         </div>
     )
 });
