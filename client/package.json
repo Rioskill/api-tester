@@ -18,7 +18,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "react-scripts build",
+    "build": "vite build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -45,6 +45,7 @@
     "@types/node": "^20.8.6",
     "@types/react": "^18.2.28",
     "@types/react-dom": "^18.2.13",
+    "sass": "^1.69.4",
     "typescript": "^5.2.2"
   }
 }

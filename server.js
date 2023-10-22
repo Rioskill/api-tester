@@ -10,10 +10,10 @@ const port = process.env.PORT || 8080;
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
 
-app.use('/static', express.static("client/build/static"));
+app.use('/static', express.static("client/dist/static"));
 
 app.get('/', (req, resp) => {
-    resp.sendFile(path.join(__dirname, "client/build/index.html"));
+    resp.sendFile(path.join(__dirname, "client/index.html"));
 });
 
 app.get('/api', (req, resp) => {

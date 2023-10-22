@@ -19,9 +19,9 @@ if (rootContainer === null) {
 } else {
   const root = ReactDOM.createRoot(rootContainer);
   root.render(
-    // <React.StrictMode>
+    <React.StrictMode>
       <AppView store={store}/>
-    // </React.StrictMode>
+    </React.StrictMode>
   );
 }
 

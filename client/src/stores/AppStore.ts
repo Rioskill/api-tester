@@ -1,42 +1,40 @@
-import {observable, action, makeObservable, autorun} from 'mobx'
+import {observable, action, makeObservable, autorun, computed} from 'mobx'
 
 export type Tab = {
     name: string
 }
 
-// export class AppStore {
-//     tabs: Tab[] = [];
-
-//     constructor(tabs: Tab) {
-//         makeAutoObservable(this, {
-//             tabs: observable,
-//             addTab: action
-//         })
-//         // this.tabs = tabs || [];
-//     }
-
-//     addTab(tab: Tab) {
-//         this.tabs.push(tab);
-//     }
-// };
-
-// export const RootContext = createContext<Partial<AppStore>>({});
-
  class AppStore {
-    // tabs = observable<Tab>([]);
     tabs: Tab[] = []
+    currentTabId: number | undefined = undefined
 
     constructor() {
         makeObservable(this, {
             tabs: observable,
-            addTab: action
+            currentTabId: observable,
+            currentTab: computed,
+            addTab: action,
+            setCurrentTabId: action,
         });
         autorun(()=>console.log('update'))
     }
 
     addTab(tab: Tab) {
         this.tabs.push(tab);
+        this.currentTabId = this.tabs.length - 1;
         console.log(this.tabs.length)
+    }
+
+    setCurrentTabId(id: number) {
+        this.currentTabId = id;
+    }
+
+    get currentTab(): string {
+        if (this.currentTabId === undefined) {
+            return 'nothing';
+        }
+
+        return this.tabs[this.currentTabId].name;
     }
 }
 

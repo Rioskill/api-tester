@@ -18,14 +18,28 @@
   flex-direction: column;
 }
 
+.explorer__tab-adder {
+  display: flex;
+  flex-direction: row;
+
+  width: 100%;
+}
+
+.explorer__tab-adder__input {
+  width: 100%;
+}
+
 .editor {
   border: 1px solid black;
   height: 100%;
-  /* background-color: blueviolet; */
 }
 
 .tab {
   padding: 10px;
   margin: 0;
   border: 1px solid black;
+
+  &:hover {
+    background-color: rgb(187, 226, 236);
+  }
 }
