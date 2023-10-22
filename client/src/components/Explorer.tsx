@@ -1,9 +1,10 @@
-import { ChangeEvent, ReactEventHandler, SyntheticEvent, useState } from 'react';
-import './App.scss';
+import { useState } from 'react';
+import '../App.scss';
 import { observer } from 'mobx-react-lite';
-import { store } from './stores/AppStore';
+import { Tab, store } from '../stores/AppStore';
+import { TextInput } from './forms/TextInput';
 
-const Tab = observer((props: {name: string, tab_key: number}) => {
+const TabElement = observer((props: {name: string, tab_key: number}) => {
     return (
         <div key={props.tab_key} className="tab" onClick={()=>{store.setCurrentTabId(props.tab_key)}}>
             {props.name}
@@ -15,7 +16,7 @@ const ExplorerTabList = observer((props: {tabs: any[]}) => {
     return (
         <div className="explorer__tab-list">
             {
-                props.tabs.map((tab, i) => <Tab key={i} tab_key={i} name={tab.name}></Tab>)
+                props.tabs.map((tab, i) => <TabElement key={i} tab_key={i} name={tab.name}></TabElement>)
             }
         </div>
     )
@@ -24,8 +25,14 @@ const ExplorerTabList = observer((props: {tabs: any[]}) => {
 const Exlorer = observer(() => {
     const [tabName, setName] = useState('');
 
-    const handleNameChange = (e: ChangeEvent<HTMLInputElement>)=>{
-        setName(e.target.value.trim());
+    const handleNameChange = (name: string) => {
+        setName(name);
+    }
+
+    const addTab = (name: string) => {
+        const tab = new Tab({name: name});
+        store.addTab(tab);
+        setName('');
     }
 
     return (
@@ -33,8 +40,8 @@ const Exlorer = observer(() => {
             <ExplorerTabList tabs={store.tabs}/>
 
             <div className="explorer__tab-adder">
-                <input type="text" className="explorer__tab-adder__input" value={tabName} onChange={handleNameChange}/>
-                <button onClick={()=>store.addTab({name: tabName})}>
+                <TextInput value={tabName} onChange={handleNameChange}/>
+                <button onClick={() => addTab(tabName)}>
                     <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
                         <line x1="20" y1="0" x2="20" y2="40" stroke="black"/>
                         <line x1="0" y1="20" x2="40" y2="20" stroke="black"/>

@@ -25,13 +25,46 @@
   width: 100%;
 }
 
-.explorer__tab-adder__input {
+.text-input {
   width: 100%;
 }
 
+.labeled {
+  display: flex;
+  flex-direction: row;
+
+  justify-content: flex-start;
+  align-items: center;
+
+  gap: 20px;
+}
+
 .editor {
+  display: flex;
+  flex-direction: column;
+
+  gap: 20px;
+
   border: 1px solid black;
   height: 100%;
+
+  padding: 0 20px 0 20px;
+}
+
+.method-selector__button {
+  appearance: none;
+  background-color: transparent;
+  padding: 10px;
+
+  border: 1px solid black;
+
+  &:hover {
+    background-color: rgb(187, 226, 236);
+  }
+
+  &.selected {
+    background-color: rgb(114, 219, 245);
+  }
 }
 
 .tab {
@@ -42,4 +75,11 @@
   &:hover {
     background-color: rgb(187, 226, 236);
   }
+}
+
+.params-table {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+  
 }

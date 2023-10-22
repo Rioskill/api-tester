@@ -1,10 +1,10 @@
 import './App.scss';
 import { observer } from 'mobx-react-lite';
 
-import Exlorer from './Explorer';
-import Editor from './Editor';
+import Exlorer from './components/Explorer';
+import Editor from './components/Editor';
 
-export const AppView = observer(() => {
+export const App = observer(() => {
   return (
       <div className="App">
       <header>
@@ -18,4 +18,4 @@ export const AppView = observer(() => {
   )
 })
 
-export default AppView;
+export default App;

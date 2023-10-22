@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 // import App from './App';
 // import { AppStore } from './stores/AppStore';
-import { AppView } from './App';
+import { App } from './App';
 import { store } from './stores/AppStore';
 // import reportWebVitals from './reportWebVitals';
 
@@ -20,7 +20,7 @@ if (rootContainer === null) {
   const root = ReactDOM.createRoot(rootContainer);
   root.render(
     <React.StrictMode>
-      <AppView store={store}/>
+      <App/>
     </React.StrictMode>
   );
 }
