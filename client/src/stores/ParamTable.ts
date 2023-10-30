@@ -26,10 +26,46 @@ export class ParamTable {
             })
         }
         this.params[id].key = key;
+        this.checkRow(id);
     }
 
     setValue(id: number, value: string) {
         this.params[id].value = value;
+        this.checkRow(id);
+    }
+
+    checkRow(id: number) {
+        if (this.params[id].key === '' && this.params[id].value === '') {
+            this.removeRow(id);
+        }
+    }
+
+    removeRow(id: number) {
+        this.removeKey(id);
+        this.removeValue(id);
+    }
+
+    removeKey(id: number) {
+        delete this.params[id];
+    }
+
+    removeValue(id: number) {
+        delete this.params[id];
+    }
+
+    get emptyRowsCnt() {
+        if (this.params.length < 3) {
+            return 3 - this.params.length; 
+        }
+
+        const lastId = this.params.length - 1;
+        const lastParam = this.params[lastId]
+
+        if (lastParam.key !== '' && lastParam.value === '') {
+            return 0;
+        }
+
+        return 1;
     }
 
     get lastValueIsEditable() {

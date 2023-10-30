@@ -25,7 +25,10 @@ const Editor = observer(() => {
                 }}/>
             </Labeled>
 
-            <EditableTable paramTable={store.currentTab.requestParams}/>
+            <EditableTable paramTable={store.currentTab.requestParams}
+                           keyName="Заголовок"
+                           valueName="Значение"
+            />
         </div>
     )
 });
