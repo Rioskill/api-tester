@@ -61,9 +61,9 @@ export class ParamTable {
         const lastId = this.params.length - 1;
         const lastParam = this.params[lastId]
 
-        if (lastParam.key !== '' && lastParam.value === '') {
-            return 0;
-        }
+        // if (lastParam.key !== '' && lastParam.value === '') {
+        //     return 0;
+        // }
 
         return 1;
     }
@@ -74,16 +74,26 @@ export class ParamTable {
         }
         const lastId = this.params.length - 1;
         const lastParam = this.params[lastId]
-        return lastParam.key !== '' && lastParam.value === '';
+        return lastParam.key !== ''// && lastParam.value === '';
+    }
+
+    get length() {
+        return this.params.length;
     }
 
     get lastId() {
         if (this.params.length === 0) {
             return 0;
         }
-        if (this.lastValueIsEditable) {
-            return this.params.length - 1;
-        }
+        
         return this.params.length;
+    }
+
+    valueIsEditable(id: number) {
+        if (this.params.length <= id) {
+            return false;
+        }
+
+        return this.params[id].key != ''
     }
 }

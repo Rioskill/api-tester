@@ -37,6 +37,11 @@
   width: 100%;
 }
 
+.textarea-input {
+  width: 100%;
+  resize: vertical;
+}
+
 .labeled {
   display: flex;
   flex-direction: row;

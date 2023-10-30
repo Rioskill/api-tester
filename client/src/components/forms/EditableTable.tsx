@@ -22,8 +22,6 @@ export const EditableTable = observer(({paramTable, keyName='Key', valueName='Va
 
     const range = (i: number) => [...Array(i).keys()]
 
-    console.log(paramTable.params);
-
     return (
         <div className="params-table">
             <span>{keyName}</span>
@@ -39,8 +37,8 @@ export const EditableTable = observer(({paramTable, keyName='Key', valueName='Va
             {
                 range(paramTable.emptyRowsCnt).map((i) => 
                 <Fragment key={i}>
-                    <input value='' onChange={changeKey(paramTable.lastId)}/>
-                    <input value='' onChange={changeValue(paramTable.lastId)}/> 
+                    <input value='' disabled={i !== 0} onChange={changeKey(paramTable.lastId)}/>
+                    <input value='' disabled={i !== 0 || !paramTable.valueIsEditable(paramTable.lastId)} onChange={changeValue(paramTable.lastId)}/> 
                 </Fragment>)
             }
         </div>

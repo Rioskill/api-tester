@@ -16,20 +16,31 @@ export class Tab {
     method: HTTPMethod = 'GET'
 
     requestParams: ParamTable
+    requestBody: string = ''
+
+    responseStatus: number = 200;
+    responseBody: string = '';
 
     constructor(props?: TabParams) {
         this.name = props?.name || '';
         this.url = props?.url || '';
         this.method = props?.method || 'GET';
         this.requestParams = new ParamTable();
+        this.requestBody = '';
 
         makeObservable(this, {
             name: observable,
             url: observable,
             method: observable,
             requestParams: observable,
+            requestBody: observable,
+            responseStatus: observable,
+            responseBody: observable,
             setUrl: action,
             setMethod: action,
+            setRequestBody: action,
+            setResponseStatus: action,
+            setResponseBody: action
         })
     }
 
@@ -39,6 +50,18 @@ export class Tab {
 
     setMethod(method: HTTPMethod) {
         this.method = method;
+    }
+
+    setRequestBody(value: string) {
+        this.requestBody = value;
+    }
+
+    setResponseStatus(value: number) {
+        this.responseStatus = value;
+    }
+
+    setResponseBody(value: string) {
+        this.responseBody = value;
     }
 }
 
