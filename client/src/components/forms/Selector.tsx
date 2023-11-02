@@ -3,7 +3,7 @@ import { HTTPMethod, store } from "../../stores/AppStore"
 
 const MethodSelectorBtn = observer((props: 
         {
-            method: string, 
+            value: string, 
             isSelected: boolean, 
             onClick: ()=>void,
         }) => {
@@ -11,21 +11,21 @@ const MethodSelectorBtn = observer((props:
 
     return (
         <button className={classes} onClick={props.onClick}>
-            {props.method}
+            {props.value}
         </button>
     )
 })
 
-export const MethodSelector = observer((props: {methods: HTTPMethod[], selectedMethod: HTTPMethod})=>{
+export const Selector = observer((props: {values: string[], selected: string, onClick: (s: string)=>void})=>{
     return (
         <div className="method-selector">
             {
-                props.methods.map((method, i) => (
+                props.values.map((value, i) => (
                     <MethodSelectorBtn
                         key={i}
-                        method={method} 
-                        isSelected={method === props.selectedMethod}
-                        onClick={()=>store.currentTab.setMethod(method)}
+                        value={value} 
+                        isSelected={value === props.selected}
+                        onClick={()=>props.onClick(value)}
                     />
                 ))
             }

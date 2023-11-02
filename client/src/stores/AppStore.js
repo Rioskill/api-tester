@@ -1,35 +1,19 @@
-import {observable, action, makeObservable, autorun, computed} from 'mobx'
-import { ParamTable } from './ParamTable'
-
-export type HTTPMethod = 'GET' | 'POST'
-export type RequestBodyType = 'JSON' | 'string'
-
-interface TabParams {
-    name?: string,
-    url?: string,
-    method?: HTTPMethod
-}
-
+import { observable, action, makeObservable, computed } from 'mobx';
+import { ParamTable } from './ParamTable';
 export class Tab {
-    name: string = ''
-
-    url: string = ''
-    method: HTTPMethod = 'GET'
-
-    requestParams: ParamTable
-    requestBody: string = ''
-    requestBodyType: RequestBodyType = 'string'
-
-    responseStatus: number = 200;
-    responseBody: string = '';
-
-    constructor(props?: TabParams) {
-        this.name = props?.name || '';
-        this.url = props?.url || '';
-        this.method = props?.method || 'GET';
+    constructor(props) {
+        this.name = '';
+        this.url = '';
+        this.method = 'GET';
+        this.requestBody = '';
+        this.requestBodyType = 'string';
+        this.responseStatus = 200;
+        this.responseBody = '';
+        this.name = (props === null || props === void 0 ? void 0 : props.name) || '';
+        this.url = (props === null || props === void 0 ? void 0 : props.url) || '';
+        this.method = (props === null || props === void 0 ? void 0 : props.method) || 'GET';
         this.requestParams = new ParamTable();
         this.requestBody = '';
-
         makeObservable(this, {
             name: observable,
             url: observable,
@@ -45,39 +29,31 @@ export class Tab {
             setRequestBodyType: action,
             setResponseStatus: action,
             setResponseBody: action
-        })
+        });
     }
-
-    setUrl(url: string) {
+    setUrl(url) {
         this.url = url;
     }
-
-    setMethod(method: HTTPMethod) {
+    setMethod(method) {
         this.method = method;
     }
-
-    setRequestBody(value: string) {
+    setRequestBody(value) {
         this.requestBody = value;
     }
-
-    setRequestBodyType(type: RequestBodyType) {
+    setRequestBodyType(type) {
         this.requestBodyType = type;
     }
-
-    setResponseStatus(value: number) {
+    setResponseStatus(value) {
         this.responseStatus = value;
     }
-
-    setResponseBody(value: string) {
+    setResponseBody(value) {
         this.responseBody = value;
     }
 }
-
 class AppStore {
-    tabs: Tab[] = []
-    currentTabId: number | undefined = undefined
-
     constructor() {
+        this.tabs = [];
+        this.currentTabId = undefined;
         makeObservable(this, {
             tabs: observable,
             currentTabId: observable,
@@ -86,62 +62,50 @@ class AppStore {
             setCurrentTabId: action,
         });
     }
-
-    addTab(tab: Tab | TabParams) {
+    addTab(tab) {
         if (tab instanceof Tab) {
             this.tabs.push(tab);
-        } else {
+        }
+        else {
             this.tabs.push(new Tab(tab));
         }
-
         this.currentTabId = this.tabs.length - 1;
     }
-
-    setCurrentTabId(id: number) {
+    setCurrentTabId(id) {
         this.currentTabId = id;
     }
-
-    get currentTab(): Tab {
+    get currentTab() {
         if (this.currentTabId === undefined) {
             return new Tab();
         }
-
         return this.tabs[this.currentTabId];
     }
 }
-
 class ResizeStore {
-    editorX = 300;
-
-    mouseDown = false;
-
     constructor() {
+        this.editorX = 300;
+        this.mouseDown = false;
         makeObservable(this, {
             editorX: observable,
             mouseDown: observable,
             setEditorX: action,
             explorerStyle: computed
-        })
+        });
     }
-
-    setEditorX(x: number) {
+    setEditorX(x) {
         if (x > 200) {
             this.editorX = x;
         }
     }
-
     setMouseDown() {
         this.mouseDown = true;
     }
-
     setMouseUp() {
         this.mouseDown = false;
     }
-
     get explorerStyle() {
-        return {width: `${this.editorX}px`}
+        return { width: `${this.editorX}px` };
     }
 }
-
 export const store = new AppStore();
 export const resize_store = new ResizeStore();
