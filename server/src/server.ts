@@ -2,8 +2,9 @@ import express from 'express'
 import path from 'path'
 import { fileURLToPath } from 'url';
 import { isJson } from './utils';
-import { BodyComparator, Comparator, JSONComparator, JSONDeepComparator } from './comparators';
+import { BodyComparator, Comparator, JSONComparator } from './comparators/base_comparators';
 import { Tester } from './tester';
+import { JSONDeepComparator } from './comparators/deep_comparator';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

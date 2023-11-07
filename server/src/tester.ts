@@ -1,4 +1,4 @@
-import { Comparator } from "./comparators";
+import { Comparator } from "./comparators/base_comparators";
 
 export type QueryParam = {key: string, value: string}
 export type TesterParams = {

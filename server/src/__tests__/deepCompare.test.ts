@@ -1,5 +1,11 @@
 import {describe, expect, it} from 'bun:test';
-import { deepCompare } from "../utils";
+import { JSONDeepComparator } from '../comparators/deep_comparator';
+
+const deepCompare = (a: any, b: any) => {
+    const comparator = new JSONDeepComparator();
+
+    return comparator.compare(a, b);
+}
 
 describe('shallow compare', () => {
     const a = {

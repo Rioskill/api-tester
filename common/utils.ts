@@ -7,7 +7,7 @@ export const isJson = (str: string) => {
     return true;
 }
 
-const isEmpty = (obj: object) => {
+export const isEmpty = (obj: object) => {
     return Object.keys(obj).length === 0;
 }
 
@@ -45,7 +45,7 @@ export const deepCopy = (origin: any) => {
     return res;
 }
 
-const isObject = (object: any) => {
+export const isObject = (object: any) => {
     return typeof object === 'object' && object !== null;
 }
 
@@ -91,55 +91,46 @@ export const deepMerge = (x: any, y: any) => {
     return getMerge(x, y);
 }
 
-type DiffObj = {
-    expected: any,
-    found: any
+const detect = (word: string, origin: string) => {
+    return origin.slice(-word.length) === word && [...origin.slice(0, word.length - 1)].every(el=>el==='!');
 }
 
-type DiffObjFabric = (x: any, y: any)=>DiffObj;
-
-export const deepCompare = (x: any, y: any): any => {
-    if (x === y) {
-        return {}
+export const shieldWords = (words: string[], origin: string) => {
+    for (const word of words) {
+        if(detect(word, origin)) {
+            return '!' + origin;
+        }
     }
 
-    if (typeof x !== 'object')
-        return TypeError('x is not an object');
-    if (x == null)
-        return TypeError('x is null');
-    if (typeof y !== 'object')
-        return TypeError('y is not an object');
-    if (y == null)
-        return TypeError('y is null');
+    return origin;
+}
 
-    const getDiff = (a: any, b: any, diffObjFabric: DiffObjFabric) => {
-        let diff: any = {}
-        for (const prop in a) {
-            if (b.hasOwnProperty(prop)) {
-                if (isObject(a[prop]) && isObject(b[prop])) {
-                    const localDiff = getDiff(a[prop], b[prop], diffObjFabric);
-                    if (!isEmpty(localDiff)) {
-                        diff[prop] = localDiff;
-                    }
-                } else {
-                    if (a[prop] !== b[prop]) {
-                        diff[prop] = diffObjFabric(a[prop], b[prop])
-                    }
-                }
-            } else {
-                diff[prop] = diffObjFabric(a[prop], undefined)
-            }
+export const unShieldWords = (words: string[], origin: string) => {
+    for (const word of words) {
+        if (detect(word, origin)) {
+            return origin.slice(1);
+        }
+    }
+
+    return origin;
+}
+
+export const detectDiff = (obj: any) => {
+    return obj.hasOwnProperty('expected') && obj.hasOwnProperty('found');
+}
+
+export const detectDiffR = (obj: any) => {
+    const queue = []
+    queue.push(obj)
+
+    while (queue.length > 0) {
+        const element = queue.shift();
+        if (detectDiff(element)) {
+            return false;
         }
 
-        return diff;
+        Object.entries(element).forEach(prop => queue.push(prop[1]));
     }
 
-    const diffObjFabric = (expected: any, found: any) => ({
-        expected: expected,
-        found: found
-    })
-
-    const reverseDiffObjFabric = (expected: any, found: any) => diffObjFabric(found, expected);
-
-    return deepMerge(getDiff(x, y, diffObjFabric), getDiff(y, x, reverseDiffObjFabric));
+    return true;
 }

@@ -5,6 +5,7 @@ import Exlorer from './components/Explorer';
 import Editor from './components/Editor';
 import { resize_store } from './stores/AppStore';
 import { MouseEvent } from 'react';
+import { Report } from './components/Report';
 
 export const App = observer(() => {
 
@@ -23,7 +24,8 @@ export const App = observer(() => {
       <div className="body">
         <Exlorer/>
         <div id="resize" onMouseDown={()=>{resize_store.setMouseDown();}}></div>
-        <Editor/>
+        {/* <Editor/> */}
+        <Report/>
       </div>
     </div>
   )

@@ -1,4 +1,4 @@
-import { deepCompare, deepEqual, isJson } from "./utils";
+import { deepEqual, isJson } from "../utils";
 
 export class Comparator {
     compare(first: any, second: any): any {
@@ -17,12 +17,6 @@ export class JSONComparator extends Comparator {
 
     compare(first: any, second: any) {
         return deepEqual(this.toJson(first), this.toJson(second));
-    }
-}
-
-export class JSONDeepComparator extends JSONComparator {
-    compare(first: any, second: any) {
-        return deepCompare(this.toJson(first), this.toJson(second));
     }
 }
 

@@ -13,8 +13,6 @@ const Editor = observer(() => {
     const methods: HTTPMethod[] = ['GET', 'POST'];
     const bodyTypes: RequestBodyType[] = ['JSON', 'string'];
 
-    // const [text, setText] = useState('');
-
     return (
         <div className="editor">
             <div className="editor__header">
