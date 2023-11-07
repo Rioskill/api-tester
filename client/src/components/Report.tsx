@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite"
 import { isEmpty, detectDiff, detectDiffR } from "../../../common/utils"
+import { store } from "../stores/AppStore";
 
 const request = {
     params: {
@@ -85,7 +86,6 @@ interface ReportNodeProps {
 }
 
 export const ReportNode = observer(({data, type, tab=0}: ReportNodeProps) => {
-    console.log(data)
     if (typeof data === 'number' || typeof data === 'string') {
         return (
             <span>
@@ -147,6 +147,7 @@ export const ReportNode = observer(({data, type, tab=0}: ReportNodeProps) => {
 export const Report = observer(() => {
     return (
        <div className="report-container">
+           <h1>{store.currentTab.name}</h1>
            <div className="report__header">
                 {data.name}
            </div>

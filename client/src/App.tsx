@@ -1,4 +1,4 @@
-import './App.scss';
+import './styles/App.scss';
 import { observer } from 'mobx-react-lite';
 
 import Exlorer from './components/Explorer';
@@ -24,7 +24,8 @@ export const App = observer(() => {
       <div className="body">
         <Exlorer/>
         <div id="resize" onMouseDown={()=>{resize_store.setMouseDown();}}></div>
-        {/* <Editor/> */}
+
+        <Editor/>
         <Report/>
       </div>
     </div>

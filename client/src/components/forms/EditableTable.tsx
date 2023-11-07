@@ -20,27 +20,17 @@ export const EditableTable = observer(({paramTable, keyName='Key', valueName='Va
         }
     }
 
-    const range = (i: number) => [...Array(i).keys()]
-
     return (
         <div className="params-table">
             <span>{keyName}</span>
             <span>{valueName}</span>
 
-            {paramTable.params.map((param, i) => (
+            {paramTable.paramInput.map((param, i) => (
                 <Fragment key={i}>
-                    <input value={param.key} onChange={changeKey(i)}/>
-                    <input value={param.value} onChange={changeValue(i)}/>
+                    <input disabled={!param.key_editable} value={param.key} onChange={changeKey(i)}/>
+                    <input disabled={!param.value_editable} value={param.value} onChange={changeValue(i)}/>
                 </Fragment>
             ))}
-
-            {
-                range(paramTable.emptyRowsCnt).map((i) => 
-                <Fragment key={i}>
-                    <input value='' disabled={i !== 0} onChange={changeKey(paramTable.lastId)}/>
-                    <input value='' disabled={i !== 0 || !paramTable.valueIsEditable(paramTable.lastId)} onChange={changeValue(paramTable.lastId)}/> 
-                </Fragment>)
-            }
         </div>
     )
 })

@@ -1,0 +1,44 @@
+@import 'Report.scss';
+@import 'Editor.scss';
+@import 'Explorer.scss';
+@import 'Forms.scss';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #8a2be2;
+  --secondary-color: white;
+
+  --dark: #1F2535;
+  --dark-font: #c8d0df;
+  --dark-hover:#633e7e;
+
+  --disabled: #c3c3c3;
+
+  --correct: #83E22B;
+
+}
+
+.App {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+.body {
+  display: flex;
+  flex-direction: row;
+
+  height: 100%;
+}
+
+#resize {
+  background-color: #ccc;
+  width: 4px;
+  height: 100%;
+  cursor: ew-resize;
+}

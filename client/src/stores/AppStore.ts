@@ -5,6 +5,7 @@ export type HTTPMethod = 'GET' | 'POST'
 export type RequestBodyType = 'JSON' | 'string'
 
 interface TabParams {
+    id?: number,
     name?: string,
     url?: string,
     method?: HTTPMethod
@@ -12,6 +13,8 @@ interface TabParams {
 
 export class Tab {
     name: string = ''
+
+    inEditing: boolean = false
 
     url: string = ''
     method: HTTPMethod = 'GET'
@@ -32,6 +35,7 @@ export class Tab {
 
         makeObservable(this, {
             name: observable,
+            inEditing: observable,
             url: observable,
             method: observable,
             requestParams: observable,
@@ -40,16 +44,22 @@ export class Tab {
             responseStatus: observable,
             responseBody: observable,
             setUrl: action,
+            setName: action,
             setMethod: action,
             setRequestBody: action,
             setRequestBodyType: action,
             setResponseStatus: action,
-            setResponseBody: action
+            setResponseBody: action,
+            setInEditing: action
         })
     }
 
     setUrl(url: string) {
         this.url = url;
+    }
+
+    setName(name: string) {
+        this.name = name;
     }
 
     setMethod(method: HTTPMethod) {
@@ -70,6 +80,10 @@ export class Tab {
 
     setResponseBody(value: string) {
         this.responseBody = value;
+    }
+
+    setInEditing(value: boolean) {
+        this.inEditing = value;
     }
 }
 

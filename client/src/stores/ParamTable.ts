@@ -13,9 +13,46 @@ export class ParamTable {
             params: observable,
             setKey: action,
             setValue: action,
-            lastValueIsEditable: computed,
-            lastId: computed,
+            paramInput: computed
         });
+    }
+
+    get paramInput() {
+        const res = []
+
+        this.params.forEach(param => res.push({
+            key: param.key,
+            value: param.value,
+            key_editable: false,
+            value_editable: false
+        }))
+
+        for (let i = 0; i < Math.max(3 - this.params.length, 1); i++) {
+            res.push({
+                key: '',
+                value: '',
+                key_editable: false,
+                value_editable: false
+            })
+        }
+
+        let cnt = 0;
+        for (let i = 0; i <  res.length; i++) {
+            let elem = res[i];
+            if (elem.key !== '') {
+                cnt++;
+                elem.key_editable = true;
+                elem.value_editable = true;
+            } else if (i > 0 && res[i - 1].value !== '') {
+                elem.key_editable = true;
+            }
+        }
+
+        if (cnt === 0) {
+            res[0].key_editable = true;
+        }
+
+        return res;
     }
 
     setKey(id: number, key: string) {
@@ -53,47 +90,7 @@ export class ParamTable {
         delete this.params[id];
     }
 
-    get emptyRowsCnt() {
-        if (this.params.length < 3) {
-            return 3 - this.params.length; 
-        }
-
-        const lastId = this.params.length - 1;
-        const lastParam = this.params[lastId]
-
-        // if (lastParam.key !== '' && lastParam.value === '') {
-        //     return 0;
-        // }
-
-        return 1;
-    }
-
-    get lastValueIsEditable() {
-        if (this.params.length === 0) {
-            return false;
-        }
-        const lastId = this.params.length - 1;
-        const lastParam = this.params[lastId]
-        return lastParam.key !== ''// && lastParam.value === '';
-    }
-
     get length() {
         return this.params.length;
-    }
-
-    get lastId() {
-        if (this.params.length === 0) {
-            return 0;
-        }
-        
-        return this.params.length;
-    }
-
-    valueIsEditable(id: number) {
-        if (this.params.length <= id) {
-            return false;
-        }
-
-        return this.params[id].key != ''
     }
 }

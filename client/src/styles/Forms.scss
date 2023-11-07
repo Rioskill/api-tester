@@ -1,0 +1,89 @@
+.text-input {
+    width: 100%;
+    font-size: 1em;
+    padding: 10px;
+  
+    background: none;
+
+    border: 1px solid var(--primary-color);
+    border-radius: 5px;
+  }
+  
+.textarea-input {
+    @extend .text-input;
+    resize: vertical;
+}
+
+.number-input {
+    @extend .text-input;
+}
+  
+.labeled {
+    display: flex;
+    flex-direction: row;
+  
+    justify-content: flex-start;
+    align-items: center;
+  
+    gap: 20px;
+}
+
+.method-selector__button {
+    appearance: none;
+    background-color: transparent;
+    padding: 10px;
+  
+    border: 1px solid var(--primary-color);
+
+    color: var(--primary-color);
+  
+    &:hover {
+        background-color: var(--dark-hover);
+        color: var(--secondary-color);
+
+        cursor: pointer;
+    }
+  
+    &.selected {
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+    }
+}
+
+.params-table {
+    display: grid;
+
+    & input {
+        appearance: none;
+        background-color: transparent;
+        border: 1px solid var(--primary-color);
+
+        padding: 5px;
+
+        &:disabled {
+            background-color: var(--disabled);
+        }
+    }
+  
+    grid-template-columns: 1fr 1fr;
+}
+
+.btn {
+    appearance: none;
+    border: none;
+
+    font-size: 1.5em;
+
+    padding: 5px;
+
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 15px;
+
+    &:hover {
+        background-color: var(--primary-color);
+        color: var(--secondary-color);
+        border: 1px solid var(--secondary-color);
+    }
+}

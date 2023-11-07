@@ -7,6 +7,8 @@ export const isJson = (str: string) => {
     return true;
 }
 
+export const range = (i: number) => [...Array(i).keys()]
+
 export const isEmpty = (obj: object) => {
     return Object.keys(obj).length === 0;
 }
