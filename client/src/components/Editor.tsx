@@ -1,6 +1,5 @@
 import { observer } from "mobx-react-lite";
 import { HTTPMethod, RequestBodyType, store } from "../stores/AppStore";
-import { useState } from "react";
 
 import { Labeled } from "./forms/Labeled";
 import { Button } from "./forms/Button";
@@ -8,6 +7,35 @@ import { TextInput, TextArea, NumberInput } from "./forms/TextInput";
 import { Selector } from "./forms/Selector";
 import { EditableTable } from "./forms/EditableTable";
 import { request_manager } from "../requestManager";
+import React from "react";
+
+interface EditorTemplateProps {
+    children: React.ReactNode[]
+}
+
+const EditorTemplate = observer(({children}: EditorTemplateProps)=>{
+    return (
+        <div className="editor">
+            {
+                children.map(child => {
+                    if (React.isValidElement(child)) {
+                        if (child.props.children) {
+                            console.log(child.props.children)
+                        }
+                        if (child.props.children?.length === 1) {
+                            const props = {...child.props, className: child.props.className + ' col-3'}
+                            // child.props.className += ' col-2'
+    
+                            return React.cloneElement(child, props);
+                        }
+                    }
+
+                    return child;
+                })
+            }
+        </div>
+    )
+})
 
 const Editor = observer(() => {
     const methods: HTTPMethod[] = ['GET', 'POST'];
@@ -15,9 +43,9 @@ const Editor = observer(() => {
 
     return (
         <div className="editor">
-            <div className="editor__header">
+            {/* <div className="editor__header">
                 {store.currentTab.name}
-            </div>
+            </div> */}
 
             <Labeled label="method">
                 <Selector values={methods} 

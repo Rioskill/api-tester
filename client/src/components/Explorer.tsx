@@ -58,6 +58,10 @@ const Exlorer = observer(() => {
 
     return (
         <div className="explorer" style={resize_store.explorerStyle}>
+            <div className="explorer__header">
+                Requests
+            </div>
+            
             <ExplorerTabList tabs={store.tabs}/>
 
             <div className="explorer__tab-adder">

@@ -125,22 +125,22 @@ class AppStore {
 }
 
 class ResizeStore {
-    editorX = 300;
+    contentX = 300;
 
     mouseDown = false;
 
     constructor() {
         makeObservable(this, {
-            editorX: observable,
+            contentX: observable,
             mouseDown: observable,
-            setEditorX: action,
+            setContentX: action,
             explorerStyle: computed
         })
     }
 
-    setEditorX(x: number) {
+    setContentX(x: number) {
         if (x > 200) {
-            this.editorX = x;
+            this.contentX = x;
         }
     }
 
@@ -153,7 +153,8 @@ class ResizeStore {
     }
 
     get explorerStyle() {
-        return {width: `${this.editorX}px`}
+        console.log(this.contentX)
+        return {width: `${this.contentX}px`}
     }
 }
 
