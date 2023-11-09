@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite"
 import { isEmpty, detectDiff, detectDiffR } from "../../../common/utils"
 import { store } from "../stores/AppStore";
+import { ExplorerList } from "./Explorer";
 
 const request = {
     params: {
@@ -145,29 +146,40 @@ export const ReportNode = observer(({data, type, tab=0}: ReportNodeProps) => {
 })
 
 export const Report = observer(() => {
+    const reports = [
+        'report 1',
+        'report 2',
+        'report 3'
+    ]
+
     return (
        <div className="report-container">
-           <h1>{store.currentTab.name}</h1>
-           <div className="report__header">
-                {data.name}
-           </div>
+           {/* <div className="report__header">
+                Report
+           </div> */}
 
-           <div className="report__url">
+           {/* <div className="report__url">
                {data.url}
-           </div>
+           </div> */}
 
-            <div className="comparison-table">
-                {
-                    Object.entries(data.comparison_result).map((result, i)=>(
-                        <ComparisonTableCell
-                            key={i}
-                            name={result[0]}
-                            isCorrect={detectDiffR(result[1])}
-                            data={result[1]}
-                        />
-                    ))
-                }
+            <div className="report__explorer">
+                    <ExplorerList strings={reports}/>
             </div>
-       </div> 
+
+            <div className="padding">
+                <div className="comparison-table">
+                        {
+                            Object.entries(data.comparison_result).map((result, i)=>(
+                                <ComparisonTableCell
+                                    key={i}
+                                    name={result[0]}
+                                    isCorrect={detectDiffR(result[1])}
+                                    data={result[1]}
+                                />
+                            ))
+                        }
+                </div>
+            </div>
+        </div> 
     )
 })

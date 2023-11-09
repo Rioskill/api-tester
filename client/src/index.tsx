@@ -6,9 +6,9 @@ import { App } from './App';
 import { store } from './stores/AppStore';
 // import reportWebVitals from './reportWebVitals';
 
-store.addTab({name: 'tab 1'})
-store.addTab({name: 'tab 2'})
-store.addTab({name: 'tab 3'})
+for (let i = 1; i <= 100; i++) {
+  store.addTab({name: `tab ${i}`})
+}
 
 const rootContainer = document.getElementById('root');
 

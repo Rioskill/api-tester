@@ -1,11 +1,24 @@
+@import 'Common.scss';
+
 .report-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
+    justify-content: flex-start;
+
+    width: 100%;
     height: 100%;
 
     --correct: rgb(70 139 30);
     --incorrect: rgb(246, 81, 81);
+}
+
+.report__header {
+    font-size: 2em;
+    font-weight: 400;
+
+    background-color: var(--dark);
+    color: var(--dark-font);
 }
 
 .inline {
@@ -21,8 +34,6 @@
 }
 
 .comparison-table {
-    width: 400px;
-
     border: 1px solid black;
     border-radius: 15px;
 
@@ -82,4 +93,18 @@
 
 .json {
     text-align: left;
+}
+
+.report__explorer {
+    height: 100%;
+
+    position: relative;
+    
+    flex-shrink: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--dark);
+    color: var(--dark-font);
 }

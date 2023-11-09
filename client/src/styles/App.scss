@@ -4,6 +4,7 @@
 @import 'Editor.scss';
 @import 'Explorer.scss';
 @import 'Forms.scss';
+@import 'Common.scss';
 
 * {
     margin: 0;
@@ -52,8 +53,11 @@ body {
 }
 
 .content {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    
+    grid-template-rows: auto 1fr;
+    grid-template-columns: repeat(12, 1fr);
+
     gap: 20px;
 
     background-color: var(--background-color);
@@ -63,22 +67,65 @@ body {
 }
 
 .content__part {
+    position: relative;
     background-color: white;
-
-    padding: clamp(20px, 3%, 30px);
 
     border: none;
     border-radius: 20px;
 
+    overflow: hidden;
+
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+
+
+@for $i from 1 through 12 {
+    .col-#{$i} {
+        @media screen and (max-width: 16000px) {
+            grid-column: auto/span $i;
+        }
+    }
 }
 
 .content__header {
     @extend .content__part;
 
-    font-size: 2em;
+    font-size: 2.5rem;
+
+    text-align: center;
+
+    padding: 10px 20px 10px 20px;
+
+    grid-column: span 12;
 }
 
-.content__body {
+.content__element {
     @extend .content__part;
+}
+
+.content__element__header {
+    position: relative;
+    
+    background-color: var(--dark);
+    color: var(--dark-font);
+
+    font-size: 2rem;
+
+    text-align: center;
+
+    &:after {
+        @extend .horizontal_line;
+    }
+}
+
+.content__element__body {
+    // padding: clamp(20px, 3%, 30px);
+}
+
+.padding {
+    padding: clamp(20px, 3%, 30px);
+}
+
+.no-padding-left {
+    padding-left: 0;
 }

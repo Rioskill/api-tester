@@ -31,12 +31,22 @@ export const App = observer(() => {
             {store.currentTab.name}
           </div>
 
-          <div className="content__body">
-            <Editor/>
+          <div className="content__element col-5">
+            <div className="content__element__header">
+              Editor
+            </div>
+            <div className="content__element__body padding">
+              <Editor/>
+            </div>
+          </div>
+
+          <div className="content__element col-7">
+            <div className="content__element__header">
+              Report
+            </div>
+            <Report/>
           </div>
         </div>
-
-        {/* <Report/> */}
       </div>
     </div>
   )

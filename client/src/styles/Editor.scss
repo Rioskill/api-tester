@@ -2,34 +2,9 @@
     display: flex;
     flex-direction: column;
 
-    // display: grid;
-    // grid-template-columns: repeat(3, 1fr);
-  
-    flex: 1;
+    // flex: 1;
   
     gap: 20px;
   
-    // border: 1px solid black;
     height: 100%;
-  
-    // padding: 0 20px 0 20px;
 }
-
-@for $i from 1 through 3 {
-    .col-#{$i} {
-        grid-column: auto/span $i;
-    }
-}
-
-// .col-2 {
-//     grid-column: span 2;
-// }
-
-// .col-3 {
-//     grid-column: span 3;
-// }
-
-// .editor-row {
-//     display: grid;
-//     grid-template-columns: 1em 2em;
-// }

@@ -43,10 +43,6 @@ const Editor = observer(() => {
 
     return (
         <div className="editor">
-            {/* <div className="editor__header">
-                {store.currentTab.name}
-            </div> */}
-
             <Labeled label="method">
                 <Selector values={methods} 
                           selected={store.currentTab.method}

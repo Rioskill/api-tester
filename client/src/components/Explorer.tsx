@@ -29,6 +29,17 @@ const TabElement = observer(({name, inEditing, tab_key}: TabElementProps) => {
 
 });
 
+
+export const ExplorerList = observer((props: {strings: any[]}) => {
+    return (
+        <div className="explorer__tab-list">
+            {
+                props.strings.map((string, i) => <TabElement key={i} tab_key={i} name={string} inEditing={false}/>)
+            }
+        </div>
+    )
+})
+
 const ExplorerTabList = observer((props: {tabs: any[]}) => {
     const isInEditing = (key: number) => {
         return store.currentTabId === key;
@@ -43,7 +54,7 @@ const ExplorerTabList = observer((props: {tabs: any[]}) => {
     )
 });
 
-const Exlorer = observer(() => {
+const Explorer = observer(() => {
     const [tabName, setName] = useState('');
 
     const handleNameChange = (name: string) => {
@@ -79,4 +90,4 @@ const Exlorer = observer(() => {
     )
 });
 
-export default Exlorer
+export default Explorer
