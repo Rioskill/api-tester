@@ -29,12 +29,12 @@ const TabElement = observer(({name, inEditing, tab_key}: TabElementProps) => {
 
 });
 
-
-export const ExplorerList = observer((props: {strings: any[]}) => {
+type ListElement = JSX.Element
+export const ExplorerList = observer((props: {elems: ListElement[]}) => {
     return (
         <div className="explorer__tab-list">
             {
-                props.strings.map((string, i) => <TabElement key={i} tab_key={i} name={string} inEditing={false}/>)
+                props.elems.map((elem, i) => <div className="tab" key={i}>{elem}</div>)
             }
         </div>
     )

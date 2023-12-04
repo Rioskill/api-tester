@@ -4,11 +4,45 @@ import { ParamTable } from './ParamTable'
 export type HTTPMethod = 'GET' | 'POST'
 export type RequestBodyType = 'JSON' | 'string'
 
+interface ReportParams {
+    id?: number,
+    name: string,
+    url: string,
+    request: any,
+    comparison_result: any
+}
+
+export class TestReport {
+    id?: number = undefined
+    name: string = ''
+    url: string = ''
+    request: any = {}
+    comparison_result: any = {}
+
+    constructor(props?: ReportParams) {
+        this.id = props?.id;
+        if (props) {
+            this.name = props.name;
+            this.url = props.url;
+            this.request = props.request;
+            this.comparison_result = props.comparison_result;
+        }
+
+        makeObservable(this, {
+            name: observable,
+            url: observable,
+            request: observable,
+            comparison_result: observable
+        })
+    }
+}
+
 interface TabParams {
     id?: number,
     name?: string,
     url?: string,
-    method?: HTTPMethod
+    method?: HTTPMethod,
+    reports?: TestReport[]
 }
 
 export class Tab {
@@ -26,12 +60,16 @@ export class Tab {
     responseStatus: number = 200;
     responseBody: string = '';
 
+    reports: TestReport[] = []
+    current_report_id?: number = undefined
+
     constructor(props?: TabParams) {
         this.name = props?.name || '';
         this.url = props?.url || '';
         this.method = props?.method || 'GET';
         this.requestParams = new ParamTable();
         this.requestBody = '';
+        this.reports = props?.reports || [];
 
         makeObservable(this, {
             name: observable,
@@ -43,6 +81,8 @@ export class Tab {
             requestBodyType: observable,
             responseStatus: observable,
             responseBody: observable,
+            reports: observable,
+            current_report_id: observable,
             setUrl: action,
             setName: action,
             setMethod: action,
@@ -50,7 +90,8 @@ export class Tab {
             setRequestBodyType: action,
             setResponseStatus: action,
             setResponseBody: action,
-            setInEditing: action
+            setInEditing: action,
+            setReports: action
         })
     }
 
@@ -84,6 +125,30 @@ export class Tab {
 
     setInEditing(value: boolean) {
         this.inEditing = value;
+    }
+
+    setReports(reports: TestReport[]) {
+        this.reports = reports;
+    }
+
+    addReport(report: TestReport) {
+        this.reports.push(report);
+    }
+
+    setCurrentReportId(id: number) {
+        this.current_report_id = id;
+    }
+
+    setCurrentReport(report: TestReport) {
+        this.current_report_id = report.id;
+    }
+
+    get currentReport(): TestReport | undefined {
+        if (this.current_report_id === undefined) {
+            return undefined;
+        }
+
+        return this.reports[this.current_report_id];
     }
 }
 

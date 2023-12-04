@@ -1,35 +1,7 @@
 import { observer } from "mobx-react-lite"
 import { isEmpty, detectDiff, detectDiffR } from "../../../common/utils"
-import { store } from "../stores/AppStore";
+import { TestReport, store } from "../stores/AppStore";
 import { ExplorerList } from "./Explorer";
-
-const request = {
-    params: {
-        a: 3,
-        b: 3
-    }
-}
-
-const notFoundreportData = {
-    name: "not found report",
-    url: "url",
-    request: request,
-    comparison_result: {
-        status: {
-            expected: 200,
-            found: 404
-        },
-        body: {
-            expected: {
-                sum: 6
-            },
-            found: undefined
-        },
-        sum: 6
-    }
-}
-
-const data = notFoundreportData;
 
 type CellValue = string | number;
 interface ComparisonTableCellProps {
@@ -77,7 +49,7 @@ const toString = (x: string | number | object | undefined) => {
 }
 
 const isPrintable = (obj: any) => {
-    return typeof data === 'number' || typeof data !== 'string' || !isEmpty(obj)
+    return typeof obj === 'number' || typeof obj === 'string' || !isEmpty(obj)
 }
 
 interface ReportNodeProps {
@@ -145,31 +117,54 @@ export const ReportNode = observer(({data, type, tab=0}: ReportNodeProps) => {
     )
 })
 
+export const ReportListTab = observer((props: {name: string, tab_id: number}) => {
+    return (
+        <div className="tab" onClick={()=>{store.currentTab.setCurrentReportId(props.tab_id)}}>
+            {props.name}
+        </div> 
+    )
+})
+
 export const Report = observer(() => {
-    const reports = [
-        'report 1',
-        'report 2',
-        'report 3'
-    ]
+    const ComparisonResultData = (props: {currentReport: TestReport | undefined}) => {
+        if (props.currentReport === undefined) {
+            return (
+                <div>
+                    Отчёт не выбран
+                </div>
+            )
+        }
+
+        return (
+            <div className="comparison-table">
+            {
+                Object.entries(props.currentReport.comparison_result).map((result, i)=>(
+                    <ComparisonTableCell
+                        key={i}
+                        name={result[0]}
+                        isCorrect={detectDiffR(result[1])}
+                        data={result[1]}
+                    />
+                ))
+            }
+            </div>
+        )
+    }
 
     return (
        <div className="report-container">
-           {/* <div className="report__header">
-                Report
-           </div> */}
-
-           {/* <div className="report__url">
-               {data.url}
-           </div> */}
-
             <div className="report__explorer">
-                    <ExplorerList strings={reports}/>
+                    <ExplorerList elems={store.currentTab.reports.map((report, i) => (
+                        <ReportListTab name={report.name} tab_id={i} />
+                    ))}/>
             </div>
 
             <div className="padding">
-                <div className="comparison-table">
+                <ComparisonResultData currentReport={store.currentTab.currentReport}/>
+                {/* <div className="comparison-table">
                         {
-                            Object.entries(data.comparison_result).map((result, i)=>(
+
+                            Object.entries(store.currentTab.currentReport.comparison_result).map((result, i)=>(
                                 <ComparisonTableCell
                                     key={i}
                                     name={result[0]}
@@ -178,7 +173,7 @@ export const Report = observer(() => {
                                 />
                             ))
                         }
-                </div>
+                </div> */}
             </div>
         </div> 
     )
