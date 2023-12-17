@@ -121,3 +121,9 @@
         transform: translateY(0);
     }
 }
+
+.danger-btn {
+    @extend .btn;
+
+    background-color: red;
+}

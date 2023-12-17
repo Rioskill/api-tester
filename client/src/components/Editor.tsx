@@ -24,8 +24,7 @@ const EditorTemplate = observer(({children}: EditorTemplateProps)=>{
                         }
                         if (child.props.children?.length === 1) {
                             const props = {...child.props, className: child.props.className + ' col-3'}
-                            // child.props.className += ' col-2'
-    
+
                             return React.cloneElement(child, props);
                         }
                     }
@@ -43,7 +42,7 @@ const Editor = observer(() => {
 
     return (
         <div className="editor">
-            <Labeled label="method">
+            <Labeled label="метод">
                 <Selector values={methods} 
                           selected={store.currentTab.method}
                           onClick={(value)=>store.currentTab.setMethod(value as HTTPMethod)}
@@ -61,24 +60,24 @@ const Editor = observer(() => {
                            valueName="Значение"
             />
 
-            <Labeled label="Request type">
+            <Labeled label="Тип запроса">
                 <Selector values={bodyTypes} 
                           selected={store.currentTab.requestBodyType}
                           onClick={(value)=>store.currentTab.setRequestBodyType(value as RequestBodyType)}
                 />
             </Labeled>
  
-            <label>Request body:</label>
+            <label>Тело запроса:</label>
             <TextArea value={store.currentTab.requestBody} onChange={(body) => store.currentTab.setRequestBody(body)}/>
 
-            <Labeled label="status">
+            <Labeled label="Код статуса">
                 <NumberInput value={store.currentTab.responseStatus} onChange={(status) => store.currentTab.setResponseStatus(status)}/>
             </Labeled>
 
-            <label>Response body:</label>
+            <label>Тело ответа:</label>
             <TextArea value={store.currentTab.responseBody} onChange={(body) => store.currentTab.setResponseBody(body)}/>
 
-            <Button value="Тест" onClick={()=>request_manager.makeRequest(store.currentTab)}/>
+            <Button value="Протестировать" onClick={()=>request_manager.makeRequest(store.currentTab)}/>
         </div>
     )
 });

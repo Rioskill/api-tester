@@ -13,6 +13,8 @@ const request = {
     }
 }
 
+store.addGroup('group');
+
 for (let i = 1; i <= 100; i++) {
   store.addTab({
     name: `tab ${i}`,

@@ -26,7 +26,6 @@ const TabElement = observer(({name, inEditing, tab_key}: TabElementProps) => {
             <TextInput value={name} onChange={handleNameChange}/>
         </div>
     )
-
 });
 
 type ListElement = JSX.Element
@@ -42,7 +41,7 @@ export const ExplorerList = observer((props: {elems: ListElement[]}) => {
 
 const ExplorerTabList = observer((props: {tabs: any[]}) => {
     const isInEditing = (key: number) => {
-        return store.currentTabId === key;
+        return store.currentGroup.currentTabId === key;
     }
 
     return (
@@ -70,10 +69,12 @@ const Explorer = observer(() => {
     return (
         <div className="explorer" style={resize_store.explorerStyle}>
             <div className="explorer__header">
-                Requests
+                <button className="group-choosing_btn" onClick={()=>store.returnToSelector()}>
+                    {store.currentGroup.name}
+                </button>
             </div>
             
-            <ExplorerTabList tabs={store.tabs}/>
+            <ExplorerTabList tabs={store.currentGroup.tabs}/>
 
             <div className="explorer__tab-adder">
                 <TextInput value={tabName} onChange={handleNameChange}/>
@@ -84,8 +85,6 @@ const Explorer = observer(() => {
                     </svg>
                 </button>
             </div>
-
-            {/* <div id="resize" onMouseMove={mouseMove}></div> */}
         </div>
     )
 });

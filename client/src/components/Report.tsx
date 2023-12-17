@@ -161,19 +161,6 @@ export const Report = observer(() => {
 
             <div className="padding">
                 <ComparisonResultData currentReport={store.currentTab.currentReport}/>
-                {/* <div className="comparison-table">
-                        {
-
-                            Object.entries(store.currentTab.currentReport.comparison_result).map((result, i)=>(
-                                <ComparisonTableCell
-                                    key={i}
-                                    name={result[0]}
-                                    isCorrect={detectDiffR(result[1])}
-                                    data={result[1]}
-                                />
-                            ))
-                        }
-                </div> */}
             </div>
         </div> 
     )

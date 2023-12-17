@@ -152,18 +152,30 @@ export class Tab {
     }
 }
 
-class AppStore {
+class Group {
+    name: string = "";
     tabs: Tab[] = []
     currentTabId: number | undefined = undefined
 
-    constructor() {
+    constructor(name?: string) {
+        if (name !== undefined) {
+            this.name = name;
+        }
+
         makeObservable(this, {
+            name: observable,
             tabs: observable,
             currentTabId: observable,
             currentTab: computed,
             addTab: action,
+            deleteTab: action,
+            deleteCurrentTab: action,
             setCurrentTabId: action,
         });
+    }
+
+    setName(name: string) {
+        this.name = name;
     }
 
     addTab(tab: Tab | TabParams) {
@@ -176,6 +188,21 @@ class AppStore {
         this.currentTabId = this.tabs.length - 1;
     }
 
+    deleteTab(groupId: number) {
+        this.tabs.splice(groupId, 1);
+
+        if (this.tabs.length === 0) {
+            this.currentTabId = undefined;
+        }
+    }
+
+    deleteCurrentTab() {
+        if (this.currentTabId !== undefined) {
+            this.deleteTab(this.currentTabId);
+            this.currentTabId = undefined;
+        }
+    }
+
     setCurrentTabId(id: number) {
         this.currentTabId = id;
     }
@@ -186,6 +213,111 @@ class AppStore {
         }
 
         return this.tabs[this.currentTabId];
+    }
+}
+
+type RoutingPath = 'EDITOR' | 'SELECTOR'
+class Routing {
+    path: RoutingPath = 'SELECTOR';
+
+    constructor(path?: RoutingPath) {
+        if (path !== undefined) {
+            this.path = path;
+        }
+
+        makeObservable(this, {
+            path: observable,
+            set: action
+        })
+    }
+
+    set(path: RoutingPath) {
+        this.path = path
+    }
+}
+
+class AppStore {
+    routing: Routing
+    groups: Group[] = []
+    currentGroupId: number | undefined = undefined
+
+    constructor() {
+        this.routing = new Routing()
+        makeObservable(this, {
+            routing: observable,
+            groups: observable,
+            currentGroupId: observable,
+            currentGroup: computed,
+            currentTab: computed,
+            addGroup: action,
+            deleteGroup: action,
+            deleteCurrentGroup: action,
+            addTab: action,
+            setCurrentGroupId: action,
+            setCurrentTabId: action,
+            goToEditor: action,
+            returnToSelector: action,
+        });
+    }
+
+    addGroup(group: Group | string) {
+        if (typeof group === 'string') {
+            this.groups.push(new Group(group));
+        } else {
+            this.groups.push(group);
+        }
+
+        this.currentGroupId = this.groups.length - 1;
+    }
+
+    deleteGroup(groupId: number) {
+        this.groups.splice(groupId, 1);
+
+        if (this.groups.length === 0) {
+            this.currentGroupId = undefined;
+        }
+    }
+
+    deleteCurrentGroup() {
+        if (this.currentGroupId !== undefined) {
+            this.deleteGroup(this.currentGroupId);
+            this.currentGroupId = undefined;
+        }
+    }
+
+    addTab(tab: Tab | TabParams) {
+        if (this.currentGroupId === undefined) {
+            this.addGroup('основная')
+        }
+        this.currentGroup.addTab(tab);
+    }
+
+    setCurrentTabId(id: number) {
+        this.currentGroup.setCurrentTabId(id);
+    }
+
+    setCurrentGroupId(id: number) {
+        this.currentGroupId = id;
+    }
+
+    goToEditor() {
+        this.routing.set('EDITOR');
+    }
+
+    returnToSelector() {
+        this.routing.set('SELECTOR');
+    }
+
+    get currentGroup(): Group {
+        if (this.currentGroupId === undefined) {
+            return new Group();
+        }
+
+        return this.groups[this.currentGroupId];
+    }
+
+    get currentTab(): Tab {
+        return this.currentGroup.currentTab;
     }
 }
 
