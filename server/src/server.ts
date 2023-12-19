@@ -103,20 +103,38 @@ app.delete('/reports/:report_id', async (req, resp) => {
 })
 
 app.post('/api', async (req, resp) => {
-    const {id, response, result} = await tester.makeTest({
-        test_id: req.body.id,
-        url: req.body.url,
-        method: req.body.method,
-        params: req.body.request.params,
-        targetBody: req.body.response.body,
-        targetStatus: req.body.response.status
-    })
-    
-    resp.send({
-        id,
-        name: id,
-        request: req.body,
-        response,
-        result
-    });
+    try {
+        const {id, response, result} = await tester.makeTest({
+            test_id: req.body.id,
+            url: req.body.url,
+            method: req.body.method,
+            params: req.body.request.params,
+            targetBody: req.body.response.body,
+            targetStatus: req.body.response.status
+        })
+
+        resp.send({
+            id,
+            name: id,
+            request: req.body,
+            response,
+            result
+        });
+    } catch (err) {
+        resp.send({
+            error: err
+        })
+    }
 });
+
+app.post('/api/group', async (req, resp) => {
+    try {
+        const res: {id, test_id, response, result}[] = await tester.makeGroupTest(req.body.id);
+        resp.send(res);
+    } catch(err) {
+        resp.send({
+            error: err
+        });
+    }
+
+})

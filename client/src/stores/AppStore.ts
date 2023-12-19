@@ -11,6 +11,7 @@ interface ReportParams {
     url: string,
     request: any,
     comparison_result: any
+    error?: string
 }
 
 export class TestReport {
@@ -20,13 +21,20 @@ export class TestReport {
     request: any = {}
     comparison_result: any = {}
 
+    error?: string = undefined
+
     constructor(props?: ReportParams) {
         this.id = props?.id;
         if (props) {
-            this.name = props.name;
-            this.url = props.url;
-            this.request = props.request;
-            this.comparison_result = props.comparison_result;
+            if (props.error === undefined) {
+                this.name = props.name;
+                this.url = props.url;
+                this.request = props.request;
+                this.comparison_result = props.comparison_result;
+            } else {
+                this.error = props.error;
+                this.name = 'fail'
+            }
         }
 
         makeObservable(this, {
@@ -224,7 +232,7 @@ export class Group {
             addTab: action,
             deleteTab: action,
             deleteCurrentTab: action,
-            setCurrentTabId: action,
+            setCurrentTabId: action
         });
     }
 
@@ -288,6 +296,11 @@ export class Group {
 
         return this.tabs[this.currentTabId];
     }
+
+
+    findTestById(test_id: number): Tab | undefined {
+        return this.tabs.find(tab => tab.id === test_id);
+    }
 }
 
 type RoutingPath = 'EDITOR' | 'SELECTOR'
@@ -331,7 +344,7 @@ class AppStore {
             setCurrentGroupId: action,
             setCurrentTabId: action,
             goToEditor: action,
-            returnToSelector: action,
+            returnToSelector: action
         });
     }
 
@@ -367,6 +380,10 @@ class AppStore {
             this.deleteGroup(this.currentGroupId);
             this.currentGroupId = undefined;
         }
+    }
+
+    findGroupById(group_id: number): Group | undefined {
+        return this.groups.find(group => group.id === group_id);
     }
 
     addTab(tab: Tab | TabParams) {

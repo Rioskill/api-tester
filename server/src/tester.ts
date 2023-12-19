@@ -47,6 +47,7 @@ export class Tester {
 
         return {
             id: response.id,
+            test_id: test_id,
             response,
             result: this.comparator.compare(
                     {
@@ -59,5 +60,20 @@ export class Tester {
                     }
                 )
         };
+    }
+
+    async makeGroupTest(group_id: number) {
+        const tests = await db_controller.getTests(group_id);
+
+        const test_res = await Promise.all(tests.map(async (test: any) => await this.makeTest({
+            test_id: test.id,
+            url: test.target_url,
+            method: test.method,
+            params: test.params,
+            targetBody: test.expected_response_body,
+            targetStatus: test.expected_status
+        })));
+
+        return test_res;
     }
 }

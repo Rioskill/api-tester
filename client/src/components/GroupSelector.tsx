@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { store } from "../stores/AppStore";
 import { TextInput } from "./forms/TextInput";
 import { useState } from "react";
+import { request_manager } from "../requestManager";
 
 interface GroupTabElementProps {
     name: string
@@ -72,6 +73,9 @@ export const GroupSelector = observer(() => {
                 <div className="group-explorer__btn-container">
                     <button className="danger-btn" onClick={()=>store.deleteCurrentGroup()}>
                         Удалить
+                    </button>
+                    <button className="btn" onClick={()=>request_manager.makeGroupRequest(store.currentGroup)}>
+                        Запустить
                     </button>
                     <button className="btn" onClick={()=>store.goToEditor()}>
                         Выбрать

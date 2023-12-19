@@ -201,6 +201,36 @@ export class RequestManager {
         })  
     }
 
+    readResponse = (json: any) => {
+        if (json["error"] !== undefined) {
+            const err = json["error"];
+            let err_msg = ''
+
+            if (err.code === "ConnectionRefused") {
+                err_msg = `Не удалось отправить запрос на ${err.path}`;
+            } else {
+                err_msg = err.code;
+            }
+
+            store.currentTab.addReport(new TestReport({
+                id: 0,
+                name: 'fail',
+                url: '',
+                request: '',
+                comparison_result: {},
+                error: err_msg
+            }))
+        } else {
+            store.currentTab.addReport(new TestReport({
+                id: json.id,
+                name: json.name || json.id,
+                url: json.url,
+                request: json.request,
+                comparison_result: json.result
+            }))
+        }
+    }
+
     makeRequest(test: Tab | Test) {
         const makeTest = (test: Tab | Test) => {
             if (test instanceof Tab) {
@@ -222,13 +252,62 @@ export class RequestManager {
         promise.then(response => {
             response.json().then(json => {
                 console.log(json)
-                store.currentTab.addReport(new TestReport({
-                    id: json.id,
-                    name: json.name,
-                    url: json.url,
-                    request: json.request,
-                    comparison_result: json.result
-                }))
+
+                this.readResponse(json);
+
+                // if (json["error"] !== undefined) {
+                //     const err = json["error"];
+                //     let err_msg = ''
+
+                //     if (err.code === "ConnectionRefused") {
+                //         err_msg = `Не удалось отправить запрос на ${err.path}`;
+                //     } else {
+                //         err_msg = err.code;
+                //     }
+
+                //     store.currentTab.addReport(new TestReport({
+                //         id: 0,
+                //         name: '0',
+                //         url: '',
+                //         request: '',
+                //         comparison_result: {},
+                //         error: err_msg
+                //     }))
+                // } else {
+                //     store.currentTab.addReport(new TestReport({
+                //         id: json.id,
+                //         name: json.name,
+                //         url: json.url,
+                //         request: json.request,
+                //         comparison_result: json.result
+                //     }))
+                // }
+            })
+        })
+    }
+
+    makeGroupRequest(group: Group) {
+        const promise = fetch(this.server_url + '/api/group', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({id: group.id})
+        })
+
+        promise.then(response => {
+            response.json().then(json => {
+                json.forEach((report: any) => {
+                    // group.findTestById(report.test_id)?.addReport(new TestReport({
+                    //     id: report.id,
+                    //     name: report.id,
+                    //     url: report.url,
+                    //     request: report.request,
+                    //     comparison_result: report.result
+                    // }))
+                    this.readResponse(report);
+                })
             })
         })
     }

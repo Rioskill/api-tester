@@ -169,7 +169,11 @@ export const Report = observer(() => {
                 </div>
 
                 <div className="padding">
-                    <ComparisonResultData currentReport={store.currentTab.currentReport}/>
+                    {
+                        store.currentTab.currentReport?.error === undefined 
+                        ? <ComparisonResultData currentReport={store.currentTab.currentReport}/>
+                        : <div>{store.currentTab.currentReport.error}</div>
+                    }
                 </div>
 
                 {
