@@ -67,6 +67,18 @@ class DBController {
         `)
     }
 
+    async saveReport(test_id: number, response_body: string, status: number) {
+        const id = await db_pool.query(`
+            insert into testreport
+            (test_id, response_body, status)
+            values
+            ($1, $2, $3)
+            returning id
+        `, [test_id, response_body, status])
+
+        return id.rows[0].id;
+    }
+
     async getReports(test_id: number) {
         const res = await db_pool.query(`
             select id, response_body, status
@@ -74,7 +86,7 @@ class DBController {
             where test_id = $1
         `, [test_id])
 
-        
+        return res.rows;
     }
 
     async getTests(group_id: number) {
@@ -92,9 +104,20 @@ class DBController {
             return  tests.map((test, i) => ({...test, params: params[i]}));
         }
 
-        const tests_with_params = await addParams(tests)
+        const getReports = (tests: {id: number}[]) => {
+            return tests.map(test => this.getReports(test.id))
+        }
 
-        return tests_with_params;
+        const addReports = async (tests: {id: number}[]) => {
+            const reports = await Promise.all(getReports(tests));
+
+            return tests.map((test, i) => ({...test, reports: reports[i]}));
+        }
+
+        const tests_with_params = await addParams(tests)
+        const tests_with_reports = await addReports(tests_with_params)
+
+        return tests_with_reports;
     }
 
     async getGroups() {
@@ -121,7 +144,7 @@ class DBController {
 
     async createTest(test: any) {
         try {
-            const test_id = await db_pool.query(`
+            const insert_res = await db_pool.query(`
                 insert into Test 
                 (name, method, target_url, request_body, expected_response_body, expected_status, group_id)
                 values
@@ -129,6 +152,8 @@ class DBController {
                 returning id
                 `, 
             [test.name, test.method, test.target_url, test.request_body, test.response_body, test.status, test.group_id])
+
+            const test_id = insert_res.rows[0].id
 
             this.saveParams(test.id, test.params);
 
@@ -183,12 +208,26 @@ class DBController {
         }
     }
 
+    async deleteReport(report_id: number) {
+        try {
+            await db_pool.query(`
+                delete from testreport
+                where id = $1
+            `, [report_id])
+        } catch(err) {
+            console.log(err);
+        }
+    }
+
     async createGroup(group_name: string) {
         try {
-            return await db_pool.query(`
+            const res = await db_pool.query(`
                 insert into testgroup (name) values ($1)
                 returning id;
             `, [group_name]);
+
+            const group_id = res.rows[0].id;
+            return group_id;
         } catch(err) {
             console.log(err);
         }

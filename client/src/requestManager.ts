@@ -41,6 +41,16 @@ export const makeTestFromTab = (tab: Tab) => {
     }
 }
 
+export const readReport = (report: any) => {
+    return {
+        id: report.id,
+        name: report.id.toString(),
+        url: report.url,
+        request: report.request,
+        comparison_result: report.result
+    }
+}
+
 export const readTest = (test: any) => {
     return {
         id: test.id,
@@ -51,7 +61,7 @@ export const readTest = (test: any) => {
         responseBody: test.expected_response_body,
         responseStatus: test.expected_status,
         requestParams: test.params,
-        reports: []
+        reports: test.reports.map((report: any) => new TestReport(readReport(report)))
     }
 }
 
@@ -69,12 +79,6 @@ export class RequestManager {
     constructor(server_url: string) {
         this.server_url = server_url;
     }
-
-    // insertTests(group_id: number, tests: any[]) {
-    //     const tabs = tests.map(test => readTest(test));
-    //     store.curretGroup.setTabs(tabs);
-    //     console.log(store)
-    // }
 
     insertGroups(groups: any[]) {
         const g = groups.map(group => readGroup(group));
@@ -158,8 +162,8 @@ export class RequestManager {
 
         promise.then(res => res.json().then(
             json => {
-                console.log(json);
-                group.setId(json.test_id)
+                console.log(json, group);
+                group.setId(json.group_id)
             }
         )) 
     }
@@ -185,6 +189,16 @@ export class RequestManager {
                 'Content-Type': 'application/json'
             }
         }) 
+    }
+
+    deleteReport(report: TestReport) {
+        const promise = fetch(this.server_url + `/reports/${report.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })  
     }
 
     makeRequest(test: Tab | Test) {

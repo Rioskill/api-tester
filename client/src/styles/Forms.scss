@@ -127,3 +127,15 @@
 
     background-color: red;
 }
+
+.report-btn-container {
+    position: relative;
+}
+
+.report-danger-btn {
+    @extend .danger-btn;
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

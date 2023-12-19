@@ -165,6 +165,23 @@ export class Tab {
         this.reports.push(report);
     }
 
+    deleteReport(reportId: number) {
+        const report = this.reports.splice(reportId, 1)[0];
+
+        request_manager.deleteReport(report);
+
+        if (this.reports.length === 0) {
+            this.current_report_id = undefined;
+        }
+    }
+
+    deleteCurrentReport() {
+        if (this.current_report_id !== undefined) {
+            this.deleteReport(this.current_report_id);
+            this.current_report_id = undefined;
+        }
+    }
+
     setCurrentReportId(id: number) {
         this.current_report_id = id;
     }

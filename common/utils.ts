@@ -9,7 +9,8 @@ export const isJson = (str: string) => {
 
 export const toJSON = (str: string) => {
     if (isJson(str)) {
-        return JSON.parse(str);
+        var correctJson = str.replace(/(['"])?([a-z0-9A-Z_]+)(['"])?:/g, '"$2": ');
+        return JSON.parse(correctJson);
     }
 
     return str;

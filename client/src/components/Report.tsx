@@ -135,6 +135,14 @@ export const Report = observer(() => {
             )
         }
 
+        if (isEmpty(props.currentReport.comparison_result)) {
+            return (
+                <div>
+                    Успешно
+                </div>
+            )
+        }
+
         return (
             <div className="comparison-table">
             {
@@ -152,16 +160,24 @@ export const Report = observer(() => {
     }
 
     return (
-       <div className="report-container">
-            <div className="report__explorer">
-                    <ExplorerList elems={store.currentTab.reports.map((report, i) => (
-                        <ReportListTab name={report.name} tab_id={i} />
-                    ))}/>
-            </div>
+        <div>
+            <div className="report-container">
+                <div className="report__explorer">
+                        <ExplorerList elems={store.currentTab.reports.map((report, i) => (
+                            <ReportListTab name={report.name} tab_id={i} />
+                        ))}/>
+                </div>
 
-            <div className="padding">
-                <ComparisonResultData currentReport={store.currentTab.currentReport}/>
-            </div>
-        </div> 
+                <div className="padding">
+                    <ComparisonResultData currentReport={store.currentTab.currentReport}/>
+                </div>
+
+                {
+                    store.currentTab.currentReport !== undefined && <button className="report-danger-btn" onClick={()=>store.currentTab.deleteCurrentReport()}>
+                        Удалить
+                    </button>
+                }
+            </div> 
+        </div>
     )
 })

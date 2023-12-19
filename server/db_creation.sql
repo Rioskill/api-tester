@@ -73,12 +73,12 @@ select * from testgroup
 
 insert into testgroup (name) values ('group 1') returning id
 
-select * from testreport
+select id, response_body, status from testreport
 
 insert into testreport
 (test_id, response_body, status)
 values
-(2, '{sum:4}', 200)
+(2, '{"sum":4}', 200)
 
 
 

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { Tester } from './tester';
 import { JSONDeepComparator } from './comparators/deep_comparator';
 import { db_controller } from './db_controller';
+import { toJSON } from '../../common/utils';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,7 +28,28 @@ const tester = new Tester(bodyComparator);
 app.get('/groups', async (req, resp) => {
     const groups = await db_controller.getGroups();
 
-    resp.send(groups);
+    const altered_groups = groups.map(group => ({
+        ...group,
+        tests: group.tests.map(test => ({
+            ...test,
+            reports: test.reports.map(
+                (report: any) => ({
+                    ...report,
+                    result: bodyComparator.compare(
+                        {
+                            status: (test as any).expected_status,
+                            body: toJSON((test as any).expected_response_body)
+                        },
+                        {
+                            status: report.status,
+                            body: toJSON(report.response_body)
+                        }
+                    )
+                }) 
+            )}))
+        }))
+
+    resp.send(altered_groups);
 })
 
 app.post('/groups', async (req, resp) => {
@@ -74,8 +96,15 @@ app.delete('/tests/:test_id', async (req, resp) => {
     resp.send(({status: 'ok'}))
 })
 
+app.delete('/reports/:report_id', async (req, resp) => {
+    db_controller.deleteReport(parseInt(req.params.report_id))
+
+    resp.send({status: 'ok'})
+})
+
 app.post('/api', async (req, resp) => {
-    const {response, result} = await tester.makeTest({
+    const {id, response, result} = await tester.makeTest({
+        test_id: req.body.id,
         url: req.body.url,
         method: req.body.method,
         params: req.body.request.params,
@@ -84,6 +113,8 @@ app.post('/api', async (req, resp) => {
     })
     
     resp.send({
+        id,
+        name: id,
         request: req.body,
         response,
         result

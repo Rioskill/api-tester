@@ -1,8 +1,10 @@
 import { Comparator } from "./comparators/base_comparators";
 import { toJSON } from '../../common/utils' 
+import { db_controller } from "./db_controller";
 
 export type QueryParam = {key: string, value: string}
 export type TesterParams = {
+    test_id: number,
     url: string,
     method: string,
     params: QueryParam[],
@@ -20,7 +22,7 @@ export class Tester {
     transformQueryParam = (param: QueryParam) => [param.key, param.value];
     transfromQueryParams = (params: QueryParam[]) => Object.fromEntries(params.map(this.transformQueryParam));
 
-    async #makeRequest(url: string, method: string, params: QueryParam[]) {
+    async #makeRequest(test_id: number, url: string, method: string, params: QueryParam[]) {
         const paramStr = new URLSearchParams(this.transfromQueryParams(params));
 
         console.log(url + '?' + paramStr)
@@ -29,23 +31,32 @@ export class Tester {
             method: method
         }))
 
+        const body = toJSON(await response.text())
+
+        const id = await db_controller.saveReport(test_id, body, response.status)
+
         return {
+            id, 
             status: response.status,
-            body: toJSON(await response.text())
+            body
         }
     }
 
-    async makeTest({url, method, params, targetBody, targetStatus}: TesterParams) {
-        const response = await this.#makeRequest(url, method, params);
+    async makeTest({test_id, url, method, params, targetBody, targetStatus}: TesterParams) {
+        const response = await this.#makeRequest(test_id, url, method, params);
 
         return {
+            id: response.id,
             response,
             result: this.comparator.compare(
                     {
                         status: targetStatus,
                         body: toJSON(targetBody)
                     },
-                    response
+                    {
+                        status: response.status,
+                        body: response.body
+                    }
                 )
         };
     }
