@@ -7,6 +7,14 @@ export const isJson = (str: string) => {
     return true;
 }
 
+export const toJSON = (str: string) => {
+    if (isJson(str)) {
+        return JSON.parse(str);
+    }
+
+    return str;
+}
+
 export const range = (i: number) => [...Array(i).keys()]
 
 export const isEmpty = (obj: object) => {

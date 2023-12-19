@@ -1,4 +1,5 @@
 import { action, computed, makeObservable, observable } from "mobx";
+import { Tab } from "./AppStore";
 
 export type Param = {
     key: string,
@@ -7,18 +8,30 @@ export type Param = {
 
 export class ParamTable {
     params: Param[] = []
+    tab: Tab | undefined = undefined
 
     constructor() {
         makeObservable(this, {
             params: observable,
+            setParams: action,
             setKey: action,
             setValue: action,
             paramInput: computed
         });
     }
 
+    setTab(tab: Tab) {
+        this.tab = tab;
+    }
+
+    setParams(params: Param[]) {
+        this.params = params;
+    }
+
     get paramInput() {
         const res = []
+
+        console.log(this.params)
 
         this.params.forEach(param => res.push({
             key: param.key,
@@ -64,11 +77,15 @@ export class ParamTable {
         }
         this.params[id].key = key;
         this.checkRow(id);
+
+        this.tab?.updateTabInDb();
     }
 
     setValue(id: number, value: string) {
         this.params[id].value = value;
         this.checkRow(id);
+
+        this.tab?.updateTabInDb();
     }
 
     checkRow(id: number) {
@@ -84,10 +101,14 @@ export class ParamTable {
 
     removeKey(id: number) {
         delete this.params[id];
+
+        this.tab?.updateTabInDb();
     }
 
     removeValue(id: number) {
         delete this.params[id];
+
+        this.tab?.updateTabInDb();
     }
 
     get length() {

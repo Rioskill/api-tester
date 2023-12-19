@@ -1,4 +1,4 @@
-import { deepMerge, isEmpty, isObject } from "../utils";
+import { deepMerge, isEmpty, isObject } from "../../../common/utils";
 import { JSONComparator } from "./base_comparators";
 
 type DiffObj = {

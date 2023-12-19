@@ -59,13 +59,6 @@ const Editor = observer(() => {
                            keyName="Заголовок"
                            valueName="Значение"
             />
-
-            <Labeled label="Тип запроса">
-                <Selector values={bodyTypes} 
-                          selected={store.currentTab.requestBodyType}
-                          onClick={(value)=>store.currentTab.setRequestBodyType(value as RequestBodyType)}
-                />
-            </Labeled>
  
             <label>Тело запроса:</label>
             <TextArea value={store.currentTab.requestBody} onChange={(body) => store.currentTab.setRequestBody(body)}/>

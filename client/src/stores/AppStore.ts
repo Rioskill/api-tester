@@ -1,5 +1,6 @@
 import {observable, action, makeObservable, autorun, computed} from 'mobx'
-import { ParamTable } from './ParamTable'
+import { Param, ParamTable } from './ParamTable'
+import { request_manager } from '../requestManager'
 
 export type HTTPMethod = 'GET' | 'POST'
 export type RequestBodyType = 'JSON' | 'string'
@@ -37,15 +38,20 @@ export class TestReport {
     }
 }
 
-interface TabParams {
+export interface TabParams {
     id?: number,
     name?: string,
     url?: string,
     method?: HTTPMethod,
-    reports?: TestReport[]
+    reports?: TestReport[],
+    requestBody?: string,
+    responseBody?: string,
+    responseStatus?: number,
+    requestParams?: Param[],
 }
 
 export class Tab {
+    id: number = -1
     name: string = ''
 
     inEditing: boolean = false
@@ -64,14 +70,23 @@ export class Tab {
     current_report_id?: number = undefined
 
     constructor(props?: TabParams) {
+        this.id = props?.id || -1;
         this.name = props?.name || '';
         this.url = props?.url || '';
         this.method = props?.method || 'GET';
         this.requestParams = new ParamTable();
-        this.requestBody = '';
+        this.requestParams.setTab(this);
+        this.requestBody = props?.requestBody || '';
+        this.responseBody = props?.responseBody || '';
+        this.responseStatus = props?.responseStatus || 200;
         this.reports = props?.reports || [];
 
+        if (props?.requestParams) {
+            this.requestParams.setParams(props.requestParams);
+        }
+
         makeObservable(this, {
+            id: observable,
             name: observable,
             inEditing: observable,
             url: observable,
@@ -83,6 +98,7 @@ export class Tab {
             responseBody: observable,
             reports: observable,
             current_report_id: observable,
+            setId: action,
             setUrl: action,
             setName: action,
             setMethod: action,
@@ -95,20 +111,32 @@ export class Tab {
         })
     }
 
+    updateTabInDb() {
+        request_manager.updateTest(this);
+    }
+
+    setId (id: number) {
+        this.id = id;
+    }
+
     setUrl(url: string) {
         this.url = url;
+        this.updateTabInDb();
     }
 
     setName(name: string) {
         this.name = name;
+        this.updateTabInDb();
     }
 
     setMethod(method: HTTPMethod) {
         this.method = method;
+        this.updateTabInDb();
     }
 
     setRequestBody(value: string) {
         this.requestBody = value;
+        this.updateTabInDb();
     }
 
     setRequestBodyType(type: RequestBodyType) {
@@ -117,10 +145,12 @@ export class Tab {
 
     setResponseStatus(value: number) {
         this.responseStatus = value;
+        this.updateTabInDb();
     }
 
     setResponseBody(value: string) {
         this.responseBody = value;
+        this.updateTabInDb();
     }
 
     setInEditing(value: boolean) {
@@ -152,15 +182,22 @@ export class Tab {
     }
 }
 
-class Group {
+interface GroupParams {
+    id?: number,
+    name?: string,
+    tabs?: Tab[]
+}
+
+export class Group {
+    id?: number = undefined
     name: string = "";
     tabs: Tab[] = []
     currentTabId: number | undefined = undefined
 
-    constructor(name?: string) {
-        if (name !== undefined) {
-            this.name = name;
-        }
+    constructor({id, name, tabs}: GroupParams) {
+        this.id = id
+        this.name = name || ''
+        this.tabs = tabs || []
 
         makeObservable(this, {
             name: observable,
@@ -174,22 +211,42 @@ class Group {
         });
     }
 
+    updateGroupInDb() {
+        request_manager.updateGroup(this);
+    }
+
+    setId(id: number) {
+        this.id = id;
+    }
+
     setName(name: string) {
         this.name = name;
+
+        this.updateGroupInDb();
+    }
+
+    setTabs(tabs: TabParams[]) {
+        this.tabs = tabs.map(tab => new Tab(tab));
+        this.currentTabId = this.tabs.length - 1;
     }
 
     addTab(tab: Tab | TabParams) {
         if (tab instanceof Tab) {
             this.tabs.push(tab);
         } else {
-            this.tabs.push(new Tab(tab));
+            tab = new Tab(tab);
+            this.tabs.push(tab);
         }
 
         this.currentTabId = this.tabs.length - 1;
+
+        request_manager.createTest(this.id!, tab);
     }
 
     deleteTab(groupId: number) {
-        this.tabs.splice(groupId, 1);
+        const tab = this.tabs.splice(groupId, 1)[0];
+
+        request_manager.deleteTest(tab);
 
         if (this.tabs.length === 0) {
             this.currentTabId = undefined;
@@ -249,6 +306,7 @@ class AppStore {
             currentGroupId: observable,
             currentGroup: computed,
             currentTab: computed,
+            setGroups: action,
             addGroup: action,
             deleteGroup: action,
             deleteCurrentGroup: action,
@@ -260,18 +318,27 @@ class AppStore {
         });
     }
 
+    setGroups(groups: GroupParams[]) {
+        this.groups = groups.map(group => new Group(group))
+    }
+
     addGroup(group: Group | string) {
         if (typeof group === 'string') {
-            this.groups.push(new Group(group));
+            group = new Group({name: group})
+            this.groups.push(group);
         } else {
             this.groups.push(group);
         }
 
         this.currentGroupId = this.groups.length - 1;
+
+        request_manager.createGroup(group)
     }
 
     deleteGroup(groupId: number) {
-        this.groups.splice(groupId, 1);
+        const group = this.groups.splice(groupId, 1)[0];
+
+        request_manager.deleteGroup(group);
 
         if (this.groups.length === 0) {
             this.currentGroupId = undefined;
@@ -310,7 +377,7 @@ class AppStore {
 
     get currentGroup(): Group {
         if (this.currentGroupId === undefined) {
-            return new Group();
+            return new Group({name: ''});
         }
 
         return this.groups[this.currentGroupId];

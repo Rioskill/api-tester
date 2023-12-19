@@ -1,4 +1,4 @@
-import { deepEqual, isJson } from "../utils";
+import { deepEqual, isJson } from "../../../common/utils";
 
 export class Comparator {
     compare(first: any, second: any): any {
